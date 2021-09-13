@@ -1,0 +1,18 @@
+specVersion: "0.0.1"
+description: "This subquery indexes extrinsics including fees"
+repository: "https://github.com/subquery/subql-examples"
+
+schema: "./schema.graphql"
+
+network:
+  endpoint: "wss://westend.api.onfinality.io/public-ws"
+#   endpoint: "wss://polkadot.api.onfinality.io/public-ws"
+
+dataSources:
+  - name: runtime
+    kind: substrate/Runtime
+    startBlock: 6988000
+    mapping:
+      handlers:
+        - handler: handleBlock
+          kind: substrate/BlockHandler

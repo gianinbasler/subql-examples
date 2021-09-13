@@ -6,6 +6,7 @@ This repo includes examples that we made to demonstrate how to use subquery.
 | Example                   | Description                                          | Keywords     |
 |---------------------------|------------------------------------------------------|--------------|
 | [extrinsic-finalized-block](extrinsic-finalized-block) | Index extrinsics and so they can be queried by hash. | blockHandler |
+| [extrinsic-history](extrinsic-history) | Index historic extrinsic data (source, destination, amount, fees), so it can be queried by extrinsic hash. | blockHandler |
 | [block-timestamp](block-timestamp) | Indexes timestamp of each finalized block. | callHandler |
 | [sum-reward](sum-reward) | Indexes staking bond, reward and slash from events of finalized block. | eventHandler |
 | [kitty](kitty) | Indexes birthinfo of kitties. | callHandler, eventHandler, customTypes |

@@ -1,0 +1,19 @@
+
+type Extrinsic @entity {
+
+  id: ID!
+
+  blockNumber: BigInt!
+
+  source: String!
+
+  destination: String!
+
+  amount: BigInt!
+
+  fee: BigInt!
+
+  tip: BigInt!
+
+  totalFee: BigInt!
+}
