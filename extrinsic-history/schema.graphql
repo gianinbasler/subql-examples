@@ -16,4 +16,10 @@ type Extrinsic @entity {
   tip: BigInt!
 
   totalFee: BigInt!
+
+  status: String!
+
+  moduleIndex: Int
+
+  errorIndex: Int
 }
