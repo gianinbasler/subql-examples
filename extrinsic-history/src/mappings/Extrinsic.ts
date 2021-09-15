@@ -35,13 +35,8 @@ function extractArgs(args: unknown[]): [unknown[]] {
 }
 
 function extractTotalFeeFromEvents(blockExtended: SignedBlockExtended): bigint {
-	let totalFee
-	blockExtended.events.forEach(event => {
-		if (isFeeEvent(event)) {
-			totalFee = (event.event.data[1] as Balance).toBigInt()
-		}
-	})
-	return totalFee
+	const feeEvent = blockExtended.events.find(event => isFeeEvent(event))
+	return (feeEvent.event.data[1] as Balance).toBigInt()
 }
 
 function isTransfer(method: string): boolean {
