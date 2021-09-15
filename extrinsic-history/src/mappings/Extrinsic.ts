@@ -42,9 +42,15 @@ function extractAndSetStatus(blockExtended: SignedBlockExtended, entity: Extrins
 	const errorEvent = blockExtended.events.find(event => isErrorEvent(event))
 	if (errorEvent) {
 		entity.status = "Failed"
-		const error = JSON.parse(errorEvent.event.data[0].toString())
-		entity.moduleIndex = error['module'].index
-		entity.errorIndex = error['module'].error
+		try {
+			const error = JSON.parse(errorEvent.event.data[0].toString())
+			entity.moduleIndex = error['module'].index
+			entity.errorIndex = error['module'].error
+		}
+		catch (e) {
+			// in some cases, the error reason is not available in which case the JSON contains '"cannotLookup": null"'
+			// leaving the indices empty in those cases
+		}
 	}
 	else {
 		entity.status = "Success"
