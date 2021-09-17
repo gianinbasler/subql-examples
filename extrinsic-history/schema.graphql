@@ -17,7 +17,7 @@ type Extrinsic @entity {
 
   totalFee: BigInt!
 
-  timestamp: String!
+  timestamp: Date!
 
   status: String!
 

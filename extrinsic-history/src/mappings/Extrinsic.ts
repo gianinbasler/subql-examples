@@ -11,7 +11,7 @@ export async function handleBlock(thisBlock: SignedBlock): Promise<void> {
 			const entity = new Extrinsic(extrinsic.hash.toString());
 			entity.blockNumber = thisBlock.block.header.number.toBigInt();
 			entity.source = extrinsic.signer.toString();
-			entity.timestamp = (thisBlock as SubstrateBlock).timestamp.toString()
+			entity.timestamp = (thisBlock as SubstrateBlock).timestamp
 
 			extractAndSetDestination(extrinsic, entity)
 			extractAndSetFees(thisBlock as SignedBlockExtended, extrinsic.tip.toBigInt(), entity)
