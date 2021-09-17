@@ -2,6 +2,7 @@ import { SignedBlock, EventRecord, Balance } from '@polkadot/types/interfaces';
 import { GenericExtrinsic } from '@polkadot/types';
 import { Extrinsic } from '../types';
 import { SignedBlockExtended } from '@polkadot/api-derive/type/types';
+import { SubstrateBlock } from '@subql/types';
 
 export async function handleBlock(thisBlock: SignedBlock): Promise<void> {
 
@@ -10,6 +11,7 @@ export async function handleBlock(thisBlock: SignedBlock): Promise<void> {
 			const entity = new Extrinsic(extrinsic.hash.toString());
 			entity.blockNumber = thisBlock.block.header.number.toBigInt();
 			entity.source = extrinsic.signer.toString();
+			entity.timestamp = (thisBlock as SubstrateBlock).timestamp.toString()
 
 			extractAndSetDestination(extrinsic, entity)
 			extractAndSetFees(thisBlock as SignedBlockExtended, extrinsic.tip.toBigInt(), entity)
@@ -34,14 +36,14 @@ function extractAndSetFees(blockExtended: SignedBlockExtended, tip: bigint, enti
 	const feeEvent = blockExtended.events.find(event => isFeeEvent(event))
 	const totalFee = (feeEvent.event.data[1] as Balance).toBigInt()
 	entity.totalFee = totalFee
-	entity.tip =  tip
+	entity.tip = tip
 	entity.fee = totalFee - tip
 }
 
 function extractAndSetStatus(blockExtended: SignedBlockExtended, entity: Extrinsic) {
 	const errorEvent = blockExtended.events.find(event => isErrorEvent(event))
 	if (errorEvent) {
-		entity.status = "Failed"
+		entity.status = 'Failed'
 		try {
 			const error = JSON.parse(errorEvent.event.data[0].toString())
 			entity.moduleIndex = error['module'].index
@@ -53,7 +55,7 @@ function extractAndSetStatus(blockExtended: SignedBlockExtended, entity: Extrins
 		}
 	}
 	else {
-		entity.status = "Success"
+		entity.status = 'Success'
 	}
 }
 
@@ -67,9 +69,9 @@ function isTransfer(method: string): boolean {
 }
 
 function isFeeEvent(event: EventRecord) {
-	return event.event.index.toHex() == "0x0404";
+	return event.event.index.toHex() == '0x0404';
 }
 
 function isErrorEvent(event: EventRecord) {
-	return event.event.index.toHex() == "0x0001";
+	return event.event.index.toHex() == '0x0001';
 }

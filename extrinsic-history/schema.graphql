@@ -17,6 +17,8 @@ type Extrinsic @entity {
 
   totalFee: BigInt!
 
+  timestamp: String!
+
   status: String!
 
   moduleIndex: Int
