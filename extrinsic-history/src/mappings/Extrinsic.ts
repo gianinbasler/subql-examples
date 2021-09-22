@@ -34,10 +34,16 @@ function extractAndSetDestination(extrinsic: GenericExtrinsic, entity: Extrinsic
 
 function extractAndSetFees(blockExtended: SignedBlockExtended, tip: bigint, entity: Extrinsic) {
 	const feeEvent = blockExtended.events.find(event => isFeeEvent(event))
-	const totalFee = (feeEvent.event.data[1] as Balance).toBigInt()
-	entity.totalFee = totalFee
+	if (feeEvent) {
+		const totalFee = (feeEvent.event.data[1] as Balance).toBigInt()
+		entity.totalFee = totalFee
+		entity.fee = totalFee - tip
+	}
+	else {
+		entity.totalFee = tip
+		entity.fee = BigInt(0)
+	}
 	entity.tip = tip
-	entity.fee = totalFee - tip
 }
 
 function extractAndSetStatus(blockExtended: SignedBlockExtended, entity: Extrinsic) {
