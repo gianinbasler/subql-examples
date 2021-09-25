@@ -1,1 +1,1 @@
-export {handleBlock} from './mappings/Extrinsic'
+export { handleBlock } from './mappings/Extrinsic'

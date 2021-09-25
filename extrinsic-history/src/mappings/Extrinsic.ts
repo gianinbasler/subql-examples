@@ -1,11 +1,14 @@
-import { SignedBlock, EventRecord, Balance } from '@polkadot/types/interfaces';
+import { Balance, EventRecord, SignedBlock } from '@polkadot/types/interfaces';
 import { GenericExtrinsic } from '@polkadot/types';
-import { Extrinsic } from '../types';
+import { Block, Extrinsic } from '../types';
 import { SignedBlockExtended } from '@polkadot/api-derive/type/types';
 import { SubstrateBlock } from '@subql/types';
 
+const blockId = '1';
+
 export async function handleBlock(thisBlock: SignedBlock): Promise<void> {
 
+	// persist extrinsic information in this block
 	await Promise.all(thisBlock.block.extrinsics.map(async extrinsic => {
 		if (extrinsic.isSigned && isTransfer(extrinsic.method.method)) {
 			const entity = new Extrinsic(extrinsic.hash.toString());
@@ -20,6 +23,28 @@ export async function handleBlock(thisBlock: SignedBlock): Promise<void> {
 			await entity.save();
 		}
 	}));
+
+	// create initial block entry if none exists yet
+	let blockEntity = await Block.get(blockId);
+	if (blockEntity === undefined) {
+		await createBlock().save();
+		blockEntity = await Block.get(blockId);
+	}
+
+	// update block information
+	updateBlock(blockEntity, thisBlock)
+	await blockEntity.save();
+}
+
+function createBlock(): Block {
+	const blockEntity = new Block(blockId);
+	blockEntity.blockHeight = BigInt(0)
+	return blockEntity;
+}
+
+function updateBlock(currentBlock: Block, thisBlock: SignedBlock) {
+	currentBlock.blockHeight = thisBlock.block.header.number.toBigInt();
+	return currentBlock;
 }
 
 function extractAndSetDestination(extrinsic: GenericExtrinsic, entity: Extrinsic) {

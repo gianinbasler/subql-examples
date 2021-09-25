@@ -25,3 +25,10 @@ type Extrinsic @entity {
 
   errorIndex: Int
 }
+
+type Block @entity {
+
+  id: ID!
+
+  blockHeight: BigInt!
+}
