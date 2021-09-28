@@ -53,7 +53,7 @@ function extractAndSetDestination(extrinsic: GenericExtrinsic, entity: Extrinsic
 		entity.destination = actualArgs[0].toString()
 	}
 	if (actualArgs[1]) {
-		entity.amount = (actualArgs[1] as Balance).toBigInt()
+		entity.amount = getAmount(actualArgs[1])
 	}
 }
 
@@ -93,6 +93,15 @@ function extractAndSetStatus(blockExtended: SignedBlockExtended, entity: Extrins
 function extractArgs(args: unknown[]): [unknown[]] {
 	const actualArgs = args.slice();
 	return [actualArgs];
+}
+
+function getAmount(value: any): bigint {
+	const balance = value as Balance;
+	if (typeof balance.toBigInt === 'function') {
+		return balance.toBigInt()
+	}
+	// transfer-all -> no amount included
+	return BigInt(-1)
 }
 
 function isTransfer(method: string): boolean {
